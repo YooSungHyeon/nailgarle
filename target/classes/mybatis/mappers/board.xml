@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+	<mapper namespace="mapper.board">
+	
+	<resultMap id="boardResult" type="ReviewBoardVO">
+		<result property="reviewNum" column="reviewNum" />
+		<result property="memberNum" column="memberNum" />
+		<result property="boardType" column="boardType" />
+		<result property="productName" column="productName" />
+		<result property="memberId" column="memberId" />
+		<result property="re_fileName" column="re_fileName" />
+		<result property="re_Title" column="re_Title" />
+		<result property="re_Star" column="re_Star" />
+		<result property="re_Text" column="re_Text" />
+		<result property="re_RegDate" column="re_RegDate" />
+		<result property="num" column="num" />
+	</resultMap>
+	
+	<resultMap id="reviewimageResult" type="ReviewImageVO">
+		<result property="re_imageNum" column="re_imageNum" />
+		<result property="reviewNum" column="reviewNum" />
+		<result property="re_fileName" column="re_fileName" />
+		<result property="re_imageRegDate" column="re_imageRegDate" />
+		<result property="productNum" column="productNum" />
+	</resultMap>
+	
+	<resultMap id="CommentResult" type="CommentVO">
+		<result property="commentNum" column="commentNum" />
+		<result property="reviewNum" column="reviewNum" />
+		<result property="memberNum" column="memberNum" />
+		<result property="memberId" column="memberId" />
+		<result property="comment" column="comment" />
+		<result property="com_RegDate" column="com_RegDate" />
+	</resultMap>
+	
+	<resultMap id="PlanBoardResult" type="PlanBoardVO">
+		<result property="planNum" column="planNum" />
+		<result property="memberNum" column="memberNum" />
+		<result property="boardType" column="boardType" />
+		<result property="memberId" column="memberId" />
+		<result property="Pl_Title" column="Pl_Title" />
+		<result property="Pl_Day" column="Pl_Day" />
+		<result property="Pl_Count" column="Pl_Count" />
+		<result property="Pl_Place" column="Pl_Place" />
+		<result property="Pl_Text" column="Pl_Text" />
+		<result property="Pl_Date1" column="Pl_Date1" />
+		<result property="Pl_Date2" column="Pl_Date2" />
+		<result property="Pl_RegDate" column="Pl_RegDate" />
+	</resultMap>
+	
+	<select id="reviewList" resultMap = "boardResult" parameterType="java.util.Map">
+	<![CDATA[
+	select * from (select @rownum := @rownum + 1 as num, 
+reviewNum, productName, memberId, re_Title, re_Star, re_RegDate from 
+(select reviewNum, productName, memberId, re_Title, re_Star, re_RegDate, (@rownum := 0) 
+from board_review order by reviewNum desc) A
+)  B
+where num between (#{section}-1)*100+ (#{pageNum}-1)*10+1 and (#{section}-1)*100+(#{pageNum})*10
+
+
+	]]>
+	
+	</select>
+	
+	
+	<insert id="addnewReview" parameterType = "java.util.Map">
+	<selectKey resultType="int" keyProperty="productNum" order="BEFORE">
+	select productNum from product where productName = #{productName}
+	</selectKey>
+	<![CDATA[
+	INSERT INTO board_review
+							(
+							memberNum,
+							productNum,
+							productName,
+							boardType,
+							memberId,
+							re_Title,
+							re_Star,
+							re_Text) 
+							VALUES (
+							#{memberNum},
+							#{productNum},
+							#{productName},
+							#{boardType},
+							#{memberId},
+							#{re_Title},
+							#{re_Star},
+							#{re_Text})
+	
+	]]>
+	
+	</insert>
+	
+	<insert id="insertReviewImageFile" parameterType="ReviewImageVO">
+	<selectKey resultType="int" keyProperty="reviewNum" order="BEFORE" >
+	select max(reviewNum) from board_review
+	</selectKey>
+	<![CDATA[
+	INSERT INTO review_image
+							( reviewNum,
+							  re_fileName,
+							  productNum,
+							  memberId) 
+							  VALUES (
+							  #{reviewNum},
+							  #{re_fileName},
+							  #{productNum},
+							  #{memberId})	
+							  
+	]]>
+	
+	</insert>
+	
+	<select id="selectImage" resultType="ReviewImageVO" parameterType="ReviewBoardVO">
+	<![CDATA[
+	select a.* from review_image a, board_review b
+	where a.reviewNum = b.reviewNum and a.reviewNum=#{reviewNum}
+	
+	
+	]]>
+	</select>
+	
+	
+	<select id="selectReviewArticle" resultType="ReviewBoardVO" parameterType="ReviewBoardVO">
+	<![CDATA[
+	select * from board_review where reviewNum = #{reviewNum}
+	
+	
+	]]>
+	</select>
+	
+	<delete id="deleteImage" parameterType="ReviewBoardVO">
+	<![CDATA[
+	delete from review_image where reviewNum = #{reviewNum}
+	]]>
+	
+	</delete>
+	
+	<delete id="deleteComment" parameterType="ReviewBoardVO">
+	<![CDATA[
+	delete from comment where reviewNum = #{reviewNum}
+	]]>
+	
+	</delete>
+	
+	<delete id="deleteReview" parameterType="ReviewBoardVO">
+	<![CDATA[
+	delete from board_review where reviewNum = #{reviewNum}
+	]]>
+	
+	</delete>
+	
+	<insert id="addComment" parameterType="ReviewBoardVO">
+	<![CDATA[
+	INSERT INTO comment
+					(reviewNum,
+					 memberNum,
+					 memberId,
+					 comment)
+					  VALUES (
+					   #{reviewNum},
+					   #{memberNum},
+					   #{memberId},
+					   #{comment}
+					   )
+	
+	]]>
+	</insert>
+	
+	<select id="selectComment" parameterType="CommentVO" resultType="java.util.Map">
+	<![CDATA[
+	select * from comment where reviewNum = #{reviewNum} order by commentNum desc
+	]]>
+	</select>
+	
+		<delete id="deleteOneComment" parameterType="CommentVO">
+	<![CDATA[
+	delete from comment where reviewNum = #{reviewNum} and commentNum = #{commentNum}
+	]]>
+	
+	</delete>
+	
+	<update id="updateArticle" parameterType="ReviewBoardVO">
+	<![CDATA[
+	update board_review set re_Title = #{re_Title}, re_Star = #{re_Star} , re_Text = #{re_Text} 
+						where reviewNum = #{reviewNum}
+	
+	
+	]]>
+	
+	</update>
+	
+	<insert id="newPlan" parameterType="PlanBoardVO">
+	<![CDATA[
+	INSERT INTO board_plan
+						(
+						 memberNum,
+						 boardType,
+						 memberId,
+						 Pl_Title,
+						 Pl_Place,
+						 Pl_Text,
+						 Pl_Date1,
+						 Pl_Date2
+						 ) VALUES (
+						 #{memberNum},
+						 #{boardType},
+						 #{memberId},
+						 #{Pl_Title},
+						 #{Pl_Place},
+						 #{Pl_Text},
+						 #{Pl_Date1},
+						 #{Pl_Date2}
+									)
+	
+	
+	]]>
+	</insert>
+	
+	<select id="planList" resultType="PlanBoardVO" parameterType="java.util.HashMap">
+	
+	select c.* from (
+		select @ROWNUM := @ROWNUM + 1 as num,t.*
+		from
+		(select (@ROWNUM := 0)) a,(
+		select * from board_plan
+		order by planNum desc
+		) t
+		) c
+		where
+		num between (#{section}-1)*100+
+		(#{pageNum}-1)*10+1 and
+		(#{section}-1)*100+(#{pageNum})*10
+	
+	</select>
+	
+		<select id="selectPlan" resultType="PlanBoardVO" parameterType="PlanBoardVO">
+	<![CDATA[ 
+	select * from board_plan where planNum = #{planNum}
+	]]>
+	
+	</select>
+	
+	<delete id="deletePlan" parameterType="PlanBoardVO">
+	<![CDATA[
+	delete from board_plan where planNum = #{planNum}
+	]]>
+	
+	</delete>
+	
+	<update id="updatePlan" parameterType="PlanBoardVO">
+	<![CDATA[
+	update board_plan set Pl_Title = #{Pl_Title},
+						  Pl_Date1 = #{Pl_Date1},
+						  Pl_Date2 = #{Pl_Date2},
+						  Pl_Place = #{Pl_Place},
+						  Pl_Text = #{Pl_Text} 
+						  where planNum = #{planNum}
+	]]>
+	
+	</update>
+	
+	<select id="searchPlan" resultType="PlanBoardVO" parameterType="java.util.HashMap">
+	select c.* from (
+		select @ROWNUM := @ROWNUM + 1 as num,t.*
+		from
+		(select (@ROWNUM := 0)) a,(
+		select * from board_plan where
+		Pl_Title like concat('%',#{search_keyword},'%')
+		order by planNum desc
+		) t
+		) c
+		where
+		num between (#{section}-1)*100+
+		(#{pageNum}-1)*10+1 and
+		(#{section}-1)*100+(#{pageNum})*10
+	
+	</select>
+	
+	<select id="searchReview" resultType="ReviewBoardVO" parameterType="java.util.HashMap">
+	select c.* from (
+		select @ROWNUM := @ROWNUM + 1 as num,t.*
+		from
+		(select (@ROWNUM := 0)) a,(
+		select * from board_review where
+		productName like concat('%',#{search_keyword},'%')
+		order by reviewNum desc
+		) t
+		) c
+		where
+		num between (#{section}-1)*100+
+		(#{pageNum}-1)*10+1 and
+		(#{section}-1)*100+(#{pageNum})*10
+	
+	</select>
+	
+	
+	</mapper>

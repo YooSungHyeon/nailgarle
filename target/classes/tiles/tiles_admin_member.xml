@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+
+	<!-- 회원관리 -->
+	<definition name="/admin/member/adminMemberMain"
+		extends="baseLayout">
+		<put-attribute name="title" value="관리자 회원 관리" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/admin/member/admin_member_main.jsp" />
+	</definition>
+
+	<definition name="/admin/member/lineupMember"
+		extends="baseLayout">
+		<put-attribute name="title" value="관리자 회원 관리" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/admin/member/admin_member_main.jsp" />
+	</definition>
+	
+	<definition name="/admin/member/admin_sellerUpdate"
+		extends="baseLayout">
+		<put-attribute name="title" value="관리자 회원 관리" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/admin/member/admin_sellerUpdate.jsp" />
+	</definition>
+	
+	<definition name="/admin/member/admin_memberUpdate"
+		extends="baseLayout">
+		<put-attribute name="title" value="관리자 회원 관리" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/admin/member/admin_memberUpdate.jsp" />
+	</definition>
+	<definition name="/admin/member/update_Member"
+		extends="baseLayout">
+		<put-attribute name="title" value="관리자 회원 관리" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/admin/member/admin_member_main.jsp" />
+	</definition>
+	
+	<definition name="/admin/member/update_Seller"
+		extends="baseLayout">
+		<put-attribute name="title" value="관리자 회원 관리" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/admin/member/admin_member_main.jsp" />
+	</definition>
+	
+	
+</tiles-definitions>
+
+

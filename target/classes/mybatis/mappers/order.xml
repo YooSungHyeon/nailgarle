@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.order">
+	<!-- 리절트 맵 정의 -->
+	<resultMap id="orderGoodsResult" type="OrderVO">
+		<result property="orderNum" column="orderNum" />
+		<result property="memberNum" column="memberNum" />
+		<result property="productNum" column="productNum" />
+		<result property="cartNum" column="cartNum" />
+		<result property="ordererName" column="ordererName" />
+		<result property="productName" column="productName" />
+		<result property="productQuantity" column="productQuantity" />
+		<result property="productOption" column="productOption" />
+		<result property="productPrice" column="productPrice" />
+
+		<result property="productSale" column="productSale" />
+		<result property="productDelivery" column="productDelivery" />
+		<result property="orderAmount" column="orderAmount" />
+		<result property="deliveryMethod" column="deliveryMethod" />
+
+		<result property="receiverName" column="receiverName" />
+		<result property="receiverHp1" column="receiverHp1" />
+		<result property="receiverHp2" column="receiverHp2" />
+		<result property="receiverHp3" column="receiverHp3" />
+		<result property="receiverTel1" column="receiverTel1" />
+
+		<result property="receiverTel2" column="receiverTel2" />
+		<result property="receiverTel3" column="receiverTel3" />
+		<result property="receiverZipcode" column="receiverZipcode" />
+		<result property="receiverAddr1" column="receiverAddr1" />
+		<result property="receiverAddr2" column="receiverAddr2" />
+		<result property="deliveryState" column="deliveryState" />
+		<result property="deliverymessage" column="deliverymessage" />
+		<result property="orderDate" column="orderDate" />
+		<result property="payMethod" column="payMethod" />
+		<result property="cardName" column="cardName" />
+		<result property="cardPayMonth" column="cardPayMonth" />
+		<result property="rentalStart" column="rentalStart" />
+		<result property="rentalEnd" column="rentalEnd" />
+		<result property="point" column="point" />
+	</resultMap>
+	<resultMap id="PointResult" type="PointVO">
+		<result property="pointNum" column="pointNum" />
+		<result property="memberNum" column="memberNum" />
+		<result property="pointUseDate" column="pointUseDate" />
+		<result property="pointContents" column="pointContents" />
+		<result property="pointSave" column="pointSave" />
+		<result property="pointUse" column="pointUse" />
+	</resultMap>
+
+
+	<select id="selectMyOrderList" resultMap="orderGoodsResult"
+		parameterType="orderVO">
+	    <![CDATA[
+			select * from t_shopping_order
+			where date_format(pay_order_time,'%Y-%m-%d')=date_format(sysdate(),'%Y-%m-%d') 
+        	and member_id=#{member_id}
+        	order by pay_order_time desc
+		]]>
+	</select>
+	<insert id="insertNewOrder" parameterType="orderVO">
+	    <![CDATA[
+			  insert into nailgarle.order (memberNum,
+								productNum,
+								ordererName,
+								productName,
+								productQuantity,
+								productOption,
+								productPrice,
+								productSale,
+								productDelivery,
+								orderAmount,
+								deliveryMethod,
+								receiverName,
+								receiverHp1,
+								receiverHp2,
+								receiverHp3,
+								receiverTel1,
+								receiverTel2,
+								receiverTel3,
+								receiverZipcode,
+								receiverAddr1,
+								receiverAddr2,
+								deliveryState,
+								deliverymessage,
+								payMethod,
+								cardName,
+								cardPayMonth,
+								rentalStart,
+								rentalEnd)
+								values(	#{memberNum },
+								#{productNum },
+								#{ordererName },
+								#{productName },
+								#{productQuantity },
+								#{productOption },
+								#{productPrice },
+								#{productSale },
+								#{productDelivery },
+								#{orderAmount },
+								#{deliveryMethod },
+								#{receiverName },
+								#{receiverHp1 },
+								#{receiverHp2 },
+								#{receiverHp3 },
+								#{receiverTel1 },
+								#{receiverTel2 },
+								#{receiverTel3 },
+								#{receiverZipcode },
+								#{receiverAddr1 },
+								#{receiverAddr2 },
+								#{deliveryState},
+								#{deliverymessage },
+								#{payMethod },
+								#{cardName },
+								#{cardPayMonth },
+								#{rentalStart },
+								#{rentalEnd })
+
+    	]]>
+	</insert>
+	<insert id="insertPoint" parameterType="orderVO">
+	    <![CDATA[
+			  insert into nailgarle.point (memberNum,
+								pointContents,
+								pointSave)
+								values(	#{memberNum },
+								"상품구매",
+								#{point })
+    	]]>
+	</insert>
+		<insert id="insertUsePoint" parameterType="orderVO">
+	    <![CDATA[
+			  insert into nailgarle.point (memberNum,
+								pointContents,
+								pointUse)
+								values(	#{memberNum },
+								"포인트사용",
+								#{point })
+    	]]>
+	</insert>
+	
+	<update id="updateMemPoint" parameterType="orderVO">
+	<![CDATA[
+		update member set point = point - #{point}
+		where
+		memberNum = #{memberNum}
+	]]>
+	</update>
+	
+	
+	<update id="updatePoint" parameterType="orderVO">
+	<![CDATA[
+		update member set point = point + #{point}
+		where
+		memberNum = #{memberNum}
+	]]>
+	</update>
+	
+	<select id="selectOrderNum" resultType="int"
+		parameterType="orderVO">
+	    <![CDATA[
+			SELECT max(orderNum) FROM nailgarle.`order` 
+			where memberNum =#{memberNum }
+			order by orderDate desc;
+		]]>
+	</select>
+
+	<select id="selectMyOrder" resultMap="orderGoodsResult"
+		parameterType="String">
+	    <![CDATA[
+		    select * from t_shopping_order
+            where date_format(pay_order_time,'%Y-%m-%d')=date_format(sysdate(),'%Y-%m-%d') 
+            and order_id=#{order_id}
+            order by pay_order_time desc
+    	]]>
+	</select>
+
+	<delete id="deleteGoodsFromCart" parameterType="orderVO">
+		delete from
+		cart
+		where cartNum=#{cartNum}
+	</delete>
+
+</mapper>

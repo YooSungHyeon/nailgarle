@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.goods">
+	<!-- 리절트 맵 정의 -->
+	<resultMap id="goodsResult" type="goodsVO">
+		<result property="productNum" column="productNum" />
+		<result property="p_mainNum" column="p_mainNum" />
+		<result property="sellerNum" column="sellerNum" />
+		<result property="p_subNum" column="p_subNum" />
+		<result property="mainCategoryName" column="mainCategoryName" />
+
+		<result property="subCategoryName" column="subCategoryName" />
+		<result property="typeName" column="typeName" />
+		<result property="productName" column="productName" />
+		<result property="sellerName" column="sellerName" />
+		<result property="originPrice" column="originPrice" />
+		<result property="productPrice" column="productPrice" />
+		<result property="productPoint" column="productPoint" />
+
+		<result property="productDelivery" column="productDelivery" />
+		<result property="productDc" column="productDc" />
+		<result property="productSale" column="productSale" />
+		<result property="productsStock" column="productsStock" />
+		<result property="productStar" column="productStar" />
+		<result property="productDisplay" column="productDisplay" />
+		<result property="productStatus" column="productStatus" />
+		<result property="productDetail" column="productDetail" />
+		<result property="productRegDate" column="productRegDate" />
+		<result property="productOption" column="productOption" />
+		<result property="productOption2" column="productOption2" />
+		<result property="fileName" column="fileName" />
+	</resultMap>
+
+	<resultMap id="imageResult" type="ImageFileVO">
+		<result property="p_imageNum" column="p_imageNum" />
+		<result property="productNum" column="productNum" />
+		<result property="fileName" column="fileName" />
+		<result property="regId" column="regId" />
+		<result property="fileType" column="fileType" />
+		<result property="p_imageRegDate" column="p_imageRegDate" />
+	</resultMap>
+	
+	<resultMap id="categoryResult" type="CategoryVO">
+		<result property="Carrier" column="Carrier" />
+		<result property="BackPack" column="BackPack" />
+		<result property="SubBackPack" column="SubBackPack" />
+		<result property="Adepter" column="Adepter" />
+		<result property="Camp" column="Camp" />
+		<result property="Used" column="Used" />
+		<result property="AllCategory" column="AllCategory" />
+	</resultMap>
+
+	<select id="selectGoodsList" parameterType="java.util.Map" resultMap="goodsResult">
+        <![CDATA[
+         select t.*
+          from(
+			select @ROWNUM := @ROWNUM + 1 as recNum, g.*,d.fileName 
+			from (select (@ROWNUM := 0)) a, product g, product_image d
+        	where g.productNum=d.productNum 
+        	and d.fileType='main'
+        	and g.p_mainNum = #{p_mainNum}
+        ]]>	
+        	<if test="p_subNum != 'not_select'">
+        	and g.p_subNum = #{p_subNum}
+			</if>
+        
+		<choose>
+			<when test="productDisplay=='bestItem'">
+		        <![CDATA[
+		        AND productDisplay=#{productDisplay}
+		        order by g.productRegDate desc)  t	
+		        limit 6
+		        ]]>				
+			</when>
+			<when test="selectSort=='star'">
+		        <![CDATA[	
+		            order by g.productStar desc)  t 
+		            where recNum between (#{section}-1)*160+ (#{pageNum}-1)*16+1 and (#{section}-1)*160+(#{pageNum})*16
+		        ]]>				
+			</when>
+			<when test="selectSort=='high'">
+		        <![CDATA[	
+		            order by g.productPrice desc)  t
+		             where recNum between (#{section}-1)*160+ (#{pageNum}-1)*16+1 and (#{section}-1)*160+(#{pageNum})*16
+		        ]]>				
+			</when>
+			<when test="selectSort=='low'">
+		        <![CDATA[	
+		            order by g.productPrice asc)  t
+		             where recNum between (#{section}-1)*160+ (#{pageNum}-1)*16+1 and (#{section}-1)*160+(#{pageNum})*16
+		        ]]>				
+			</when>
+			<otherwise>
+		        <![CDATA[	
+		            order by g.productRegDate desc)  t
+		             where recNum between (#{section}-1)*160+ (#{pageNum}-1)*16+1 and (#{section}-1)*160+(#{pageNum})*16
+		        ]]>				
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="selectMainGoodsList" parameterType="java.util.Map" resultMap="goodsResult">
+        <![CDATA[
+       	  select t.*
+          from(select  g.*,d.fileName 
+		  from  product g, product_image d
+          where g.productNum=d.productNum 
+          and d.fileType='main' 
+		  AND productDisplay=#{productDisplay}       	
+		  order by g.productRegDate desc)  t
+   		 ]]>
+	</select>
+	
+	<select id="selectGoodsListCount" parameterType="java.util.Map" resultType="int">
+	    <![CDATA[
+         select count(*) from product 
+         where p_mainNum = #{p_mainNum}
+        
+        ]]>
+            <if test="p_subNum != 'not_select'">
+        	and p_subNum = #{p_subNum}
+			</if>	
+	</select>
+	
+	
+	<select id="selectGoodsDetail" resultMap="goodsResult"
+		parameterType="String">
+	    <![CDATA[
+		     select g.*,d.fileName from product g, product_image d
+	        where g.productNum=d.productNum 
+	        and d.fileType='main'
+	        and g.productNum=#{productNum}
+	        order by g.productNum
+    	]]>
+	</select>
+	
+	<select id="selectGoodsDetailImage" resultMap="imageResult"
+		parameterType="String">
+	    <![CDATA[
+		    	select * from  product_image 
+		    	where  fileType!='main'
+				and productNum=#{productNum}
+    	]]>
+	</select>
+	
+	<select id="selectGoodsBySearchWord" resultMap="goodsResult" parameterType="String">
+     <![CDATA[
+			select g.*,d.fileName from product g, product_image d
+		    where g.productNum=d.productNum
+		    and d.fileType='main'
+		    and g.productName like Concat('%', IFNULL(#{searchWord}, '') , '%')
+		    ]]>
+		    <if test="p_mainNum != null">
+        	and p_mainNum = #{p_mainNum}
+			</if>	
+			order by g.productRegDate desc
+	</select>
+	
+	<select id="selectGoodsBySearchWordCount" resultMap="categoryResult" parameterType="String">
+     <![CDATA[
+     		select count(*) as AllCategory,count(case when p_mainNum='1' then '0' end) as Carrier, count(case when p_mainNum='2' then '0' end) as BackPack,
+     		count(case when p_mainNum='3' then '0' end) as SubBackPack,	count(case when p_mainNum='4' then '0' end) as Adepter, 
+     		count(case when p_mainNum='5' then '0' end) as Camp, count(case when p_mainNum='6' then '0' end) as Used from product g
+		    where g.productName like Concat('%', IFNULL(#{searchWord}, '') , '%')
+		    order by g.productRegDate desc;
+		]]>
+	</select>
+
+</mapper>

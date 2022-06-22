@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.admin.board">
+	<resultMap id="boardResult" type="ReviewBoardVO">
+		<result property="reviewNum" column="reviewNum" />
+		<result property="memberNum" column="memberNum" />
+		<result property="boardType" column="boardType" />
+		<result property="productName" column="productName" />
+		<result property="memberId" column="memberId" />
+		<result property="re_fileName" column="re_fileName" />
+		<result property="re_Title" column="re_Title" />
+		<result property="re_Star" column="re_Star" />
+		<result property="re_Text" column="re_Text" />
+		<result property="re_RegDate" column="re_RegDate" />
+		<result property="num" column="num" />
+	</resultMap>
+	
+	<resultMap id="reviewimageResult" type="ReviewImageVO">
+		<result property="re_imageNum" column="re_imageNum" />
+		<result property="reviewNum" column="reviewNum" />
+		<result property="re_fileName" column="re_fileName" />
+		<result property="re_imageRegDate" column="re_imageRegDate" />
+		<result property="productNum" column="productNum" />
+	</resultMap>
+	
+	<resultMap id="CommentResult" type="CommentVO">
+		<result property="commentNum" column="commentNum" />
+		<result property="reviewNum" column="reviewNum" />
+		<result property="memberNum" column="memberNum" />
+		<result property="memberId" column="memberId" />
+		<result property="comment" column="comment" />
+		<result property="com_RegDate" column="com_RegDate" />
+	</resultMap>
+	
+	<resultMap id="PlanBoardResult" type="PlanBoardVO">
+		<result property="planNum" column="planNum" />
+		<result property="memberNum" column="memberNum" />
+		<result property="boardType" column="boardType" />
+		<result property="memberId" column="memberId" />
+		<result property="Pl_Title" column="Pl_Title" />
+		<result property="Pl_Day" column="Pl_Day" />
+		<result property="Pl_Count" column="Pl_Count" />
+		<result property="Pl_Place" column="Pl_Place" />
+		<result property="Pl_Text" column="Pl_Text" />
+		<result property="Pl_Date1" column="Pl_Date1" />
+		<result property="Pl_Date2" column="Pl_Date2" />
+		<result property="Pl_RegDate" column="Pl_RegDate" />
+	</resultMap>
+	
+	<select id="planList" resultType="PlanBoardVO" parameterType="java.util.HashMap">
+	<![CDATA[ 
+	select c.* from (
+		select @ROWNUM := @ROWNUM + 1 as num,t.*
+		from
+		(select (@ROWNUM := 0)) a,(
+		select * from board_plan
+		order by planNum desc
+		) t
+		) c
+		limit 10
+	]]>
+	</select>
+	
+	<select id="reviewList" resultType="ReviewBoardVO" parameterType="java.util.HashMap">
+	<![CDATA[ 
+	select c.* from (
+		select @ROWNUM := @ROWNUM + 1 as num,t.*
+		from
+		(select (@ROWNUM := 0)) a,(
+		select * from board_review
+		order by reviewNum desc
+		) t
+		) c
+		limit 10
+	]]>
+	</select>
+	
+	<delete id="deletePlan" parameterType="PlanBoardVO">
+	<![CDATA[
+	delete from board_plan where planNum = #{planNum}
+	]]>
+	</delete>
+	
+	<select id="reviewImage" resultType="ReviewImageVO">
+	select re_fileName from review_image where reviewNum = #{reviewNum}
+	</select>
+	
+	<delete id="deleteComment" parameterType="ReviewBoardVO">
+	delete from comment where reviewNum = #{reviewNum}
+	</delete>
+	
+	<delete id="deleteImage" parameterType="ReviewBoardVO">
+	delete from review_image where reviewNum = #{reviewNum}
+	</delete>
+	
+	<delete id="deleteReview" parameterType="ReviewBoardVO">
+	delete from board_review where reviewNum = #{reviewNum}
+	</delete>
+	
+	
+	<select id="findPlan" resultType="PlanBoardVO" parameterType="java.util.HashMap">
+	select c.* from (
+		select @ROWNUM := @ROWNUM + 1 as num,t.*
+		from
+		(select (@ROWNUM := 0)) a,(
+		select * from board_plan
+	<if test="search_keyword != ''">
+	where 
+	<if test="search_type == '전체'">
+	memberId like concat('%',#{search_keyword},'%')
+	or Pl_Title like concat('%',#{search_keyword},'%')
+	</if>
+	<if test="search_type == '아이디'">
+	memberId like concat('%',#{search_keyword},'%')
+	</if>
+	<if test="search_type == '제목'">
+	Pl_Title like concat('%',#{search_keyword},'%')
+	</if>
+	</if>
+	order by planNum desc
+		) t
+		) c
+	where
+		num between (#{section}-1)*100+
+		(#{pageNum}-1)*10+1 and
+		(#{section}-1)*100+(#{pageNum})*10
+	</select>
+	
+	
+	<select id="findReview" resultType="ReviewBoardVO" parameterType="java.util.HashMap">
+	select c.* from (
+		select @ROWNUM := @ROWNUM + 1 as num,t.*
+		from
+		(select (@ROWNUM := 0)) a,(
+		select * from board_review
+	<if test="search_keyword != ''">
+	where 
+	<if test="search_type == '전체'">
+	memberId like concat('%',#{search_keyword},'%') or
+	re_Title like concat('%',#{search_keyword},'%') or
+	productName like concat('%',#{search_keyword},'%')
+	</if>
+	<if test="search_type == '아이디'">
+	memberId like concat('%',#{search_keyword},'%')
+	</if>
+	<if test="search_type == '제목'">
+	re_Title like concat('%',#{search_keyword},'%')
+	</if>
+	<if test="search_type == '상품명'">
+	productName like concat('%',#{search_keyword},'%')
+	</if>
+	</if>
+	order by reviewNum desc
+		) t
+		) c
+	where
+		num between (#{section}-1)*100+
+		(#{pageNum}-1)*10+1 and
+		(#{section}-1)*100+(#{pageNum})*10
+	</select>
+	
+	
+</mapper>

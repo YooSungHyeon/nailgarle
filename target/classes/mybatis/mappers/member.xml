@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.member">
+
+	<!-- 리절트 맵 정의 -->
+	<resultMap id="memberResult" type="MemberVO">
+		<result property="memberNum" column="memberNum" />
+		<result property="memberId" column="memberId" />
+		<result property="memberPw" column="memberPw" />
+		<result property="memberName" column="memberName" />
+		<result property="gender" column="gender" />
+		<result property="member_birth_gn" column="member_birth_gn" />
+		<result property="memberHp1" column="memberHp1" />
+		<result property="memberHp2" column="memberHp2" />
+		<result property="memberHp3" column="memberHp3" />
+		<result property="memberEmail1" column="memberEmail1" />
+		<result property="memberEmail2" column="memberEmail2" />
+		<result property="birth" column="birth" />
+		<result property="memberZipcode" column="memberZipcode" />
+		<result property="memberAddr1" column="memberAddr1" />
+		<result property="memberAddr2" column="memberAddr2" />
+		<result property="point" column="point" />
+		<result property="grade" column="grade" />
+		<result property="joinDate" column="joinDate" />
+		<result property="del_yn" column="del_yn" />
+		<result property="del_date" column="del_date" />
+	</resultMap>
+
+	<select id="login" resultType="memberVO"
+		parameterType="java.util.Map">
+	<![CDATA[
+		select * from member 
+		where memberId=#{memberId}			 
+	]]>
+	</select>
+
+	<select id="selectOverlappedID" parameterType="String"
+		resultType="String">
+	<![CDATA[
+		select case count(*) when 1 then 'true' when 0 then 'false'
+		end
+		from member
+		where memberId = #{id}
+	]]>
+	</select>
+
+	<insert id="insertNewMember" parameterType="memberVO">
+	<![CDATA[
+		insert into member(memberId, 
+							memberPw, 
+							memberName, 
+							gender, 
+							memberHp1,
+							memberHp2,
+							memberHp3,
+							memberEmail1,
+							memberEmail2,
+							birth,
+							memberZipcode,
+							memberAddr1,
+							memberAddr2,
+							recommend) 
+					values(#{memberId},
+							#{memberPw},
+							#{memberName},
+							#{gender},
+							#{memberHp1},
+							#{memberHp2},
+							#{memberHp3},
+							#{memberEmail1},
+							#{memberEmail2},
+							#{birth},
+							#{memberZipcode},
+                            #{memberAddr1},
+                            #{memberAddr2},
+                            #{recommend})
+	]]>
+	</insert>
+
+	<!-- 아이디찾기 이메일주소 회원매칭 -->
+	<select id="selectIdFind" parameterType="memberVO"
+		resultType="String">
+	<![CDATA[
+		select case count(*) when 1 then 'true' when 0 then 'false'
+		end
+		from member
+		where memberName = #{memberName} 
+		and memberEmail1 = #{memberEmail1} 
+		and memberEmail2 = #{memberEmail2}
+	]]>
+	</select>
+
+	<select id="selectIdMember" resultType="memberVO"
+		parameterType="memberVO">
+	<![CDATA[
+		select * from member 
+		where memberName=#{memberName} and memberEmail1=#{memberEmail1} 
+	]]>
+	</select>
+
+	<!-- 비밀번호찾기 이메일주소 회원매칭 -->
+	<select id="selectPwFind" parameterType="memberVO"
+		resultType="String">
+	<![CDATA[
+		select case count(*) when 1 then 'true' when 0 then 'false'
+		end
+		from member
+		where memberId = #{memberId} 
+		and memberName = #{memberName} 
+		and memberEmail1 = #{memberEmail1} 
+		and memberEmail2 = #{memberEmail2}
+	]]>
+	</select>
+
+	<select id="selectPwMember" resultType="memberVO"
+		parameterType="memberVO">
+	<![CDATA[
+		select * from member 
+		where memberId=#{memberId} and memberName=#{memberName}
+	]]>
+	</select>
+
+	<update id="updatePw" parameterType="memberVO">
+	<![CDATA[
+		update member set memberPw = #{memberPw}
+		where
+		memberId = #{memberId} and memberName = #{memberName}
+	]]>
+	</update>
+
+</mapper>

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.admin.member">
+	<resultMap id="memberResult" type="MemberVO">
+		<result property="memberNum" column="memberNum" />
+		<result property="memberId" column="memberId" />
+		<result property="memberPw" column="memberPw" />
+		<result property="memberName" column="memberName" />
+		<result property="gender" column="gender" />
+		<result property="member_birth_gn" column="member_birth_gn" />
+		<result property="memberHp1" column="memberHp1" />
+		<result property="memberHp2" column="memberHp2" />
+		<result property="memberHp3" column="memberHp3" />
+		<result property="memberEmail1" column="memberEmail1" />
+		<result property="memberEmail2" column="memberEmail2" />
+		<result property="birth" column="birth" />
+		<result property="memberZipcode" column="memberZipcode" />
+		<result property="memberAddr1" column="memberAddr1" />
+		<result property="memberAddr2" column="memberAddr2" />		
+		<result property="point" column="point" />
+		<result property="grade" column="grade" />
+		<result property="joinDate" column="joinDate" />
+		<result property="del_yn" column="del_yn" />
+		<result property="del_date" column="del_date" />		
+	</resultMap>
+	<select id="listMember" resultMap="memberResult"
+		parameterType="java.util.HashMap">
+		select c.* from (
+		select @ROWNUM := @ROWNUM + 1 as recNum,t.*
+		from
+		(select (@ROWNUM := 0)) a,(
+		select * from member
+		order by joinDate desc
+		) t
+		) c
+		where
+		recNum between (#{secNum}-1)*100+
+		(#{pageNum}-1)*10+1 and
+		(#{secNum}-1)*100+(#{pageNum})*10
+	</select>
+
+	<select id="memberdetail" resultType="memberVO" parameterType="memberVO">
+	select * from member where memberNum = #{memberNum}
+	</select>
+	
+	<select id="sellerdetail" resultType="sellerVO" parameterType="sellerVO">
+	select * from seller where sellerNum = #{sellerNum}
+	</select>
+	
+		<update id="modifyMember" parameterType="memberVO">
+		update member
+		<set>
+			<!-- memberPw=#{memberPw}, -->
+			memberName=#{memberName},
+			gender=#{gender},
+			memberHp1=#{memberHp1},
+			memberHp2=#{memberHp2},
+			memberHp3=#{memberHp3},
+			memberEmail1=#{memberEmail1},
+			memberEmail2=#{memberEmail2},
+			memberZipcode=#{memberZipcode},
+			memberAddr1=#{memberAddr1},
+			memberAddr2=#{memberAddr2}
+		</set>
+		where memberId=#{memberId}
+	</update>
+	
+	<update id="modifySeller" parameterType="sellerVO">
+		update seller
+		<set>
+			sellerName=#{sellerName},
+			sellerHp1=#{sellerHp1},
+			sellerHp2=#{sellerHp2},
+			sellerHp3=#{sellerHp3},
+			businessNum=#{businessNum},
+			sellerEmail1=#{sellerEmail1},
+			sellerEmail2=#{sellerEmail2},
+			sellerZipcode=#{sellerZipcode},
+			sellerAddr1=#{sellerAddr1},
+			sellerAddr2=#{sellerAddr2}
+		</set>
+		where sellerId=#{sellerId}
+	</update>
+	
+	
+	<select id="lineupMember" resultType="memberVO" parameterType="java.util.HashMap">
+	select c.* from (select @ROWNUM := @ROWNUM + 1 as recNum,t.*
+					from (select (@ROWNUM := 0)) a,(
+					select * from member where 
+					<if test="search_type == '전체'">
+					(memberId like concat('%',#{search_keyword},'%')
+					or memberName like concat('%',#{search_keyword},'%')
+					or grade like concat('%',#{search_keyword},'%')) and
+					</if>
+					del_yn = #{del_yn} and date_format(joinDate,'%Y-%m-%d')
+					between #{beginDate} and #{endDate}
+					
+					<if test="search_type == '아이디'">
+					and memberId like concat('%',#{search_keyword},'%')
+					</if>
+					<if test="search_type == '이름'">
+					and memberName like concat('%',#{search_keyword},'%')
+					</if>
+					<if test="search_type == '등급'">
+					and grade like concat('%',#{search_keyword},'%')
+					</if>
+					order by memberNum desc
+					) t
+					) c
+					where
+					recNum between (#{secNum}-1)*100+
+					(#{pageNum}-1)*10+1 and
+					(#{secNum}-1)*100+(#{pageNum})*10
+	</select>
+	
+	<select id="sellerMember" resultType="memberVO" parameterType="java.util.HashMap" >
+	select * from (select @rownum := @rownum +1 as recNum,
+					sellerNum as memberNum, sellerId as memberId,sellerName as memberName,del_yn,joinDate 
+					from
+					(select sellerNum, sellerId, sellerName, del_yn, joinDate,( @rownum := 0)
+					from seller where 
+					<if test="search_type == '전체'">
+					(sellerId like concat('%',#{search_keyword},'%')
+					or sellerName like concat('%',#{search_keyword},'%')) and
+					</if>
+					del_yn = #{del_yn} and date_format(joinDate,'%Y-%m-%d')
+					between #{beginDate} and #{endDate} 
+					
+					<if test="search_type == '아이디'">
+					and sellerId like concat('%',#{search_keyword},'%')
+					</if>
+					<if test="search_type == '이름'">
+					and sellerName like concat('%',#{search_keyword},'%')
+					</if>
+					order by sellerNum desc) A
+					) B
+					where
+					recNum between (#{secNum}-1)*100+
+					(#{pageNum}-1)*10+1 and
+					(#{secNum}-1)*100+(#{pageNum})*10
+	
+	</select>
+	
+	<update id="updateMember" parameterType="memberVO">
+	update member set
+	del_yn = 'y'
+	where memberNum = #{memberNum}
+	</update>
+	
+	<update id="updateMember2" parameterType="memberVO">
+	update member set
+	del_yn = 'n'
+	where memberNum = #{memberNum}
+	</update>
+	
+	<update id="updateSeller" parameterType="sellerVO">
+	update seller set
+	del_yn = 'y'
+	where sellerNum = #{sellerNum}
+	</update>
+	
+	<update id="updateSeller2" parameterType="sellerVO">
+	update seller set
+	del_yn = 'n'
+	where sellerNum = #{sellerNum}
+	</update>
+	
+</mapper>
+

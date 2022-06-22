@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+	<!-- 주문관리 -->
+	<definition name="/admin/order/adminOrderMain"
+		extends="baseLayout">
+		<put-attribute name="title" value="관리자 주문/배송 관리" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/admin/order/admin_order_main.jsp" />
+	</definition>
+</tiles-definitions>
+
+

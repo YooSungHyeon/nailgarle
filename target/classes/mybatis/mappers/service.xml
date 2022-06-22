@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.service">
+	<!-- 리절트 맵 정의 -->
+	<resultMap id="serviceResult" type="serviceVO">
+		<result property="qnaNum" column="qnaNum" />
+		<result property="memberNum" column="memberNum" />
+		<result property="productNum" column="productNum" />
+		<result property="productName" column="productName" />
+		<result property="boardType" column="boardType" />
+		<result property="memberId" column="memberId" />
+		<result property="qnaType" column="QnaType" />
+		<result property="qnaTitle" column="QnaTitle" />
+		<result property="qnaText" column="QnaText" />
+		<result property="qnaRegDate" column="QnaRegDate" />
+		<result property="qnaAns" column="QnaAns" />
+		<result property="qnaSecret" column="QnaSecret" />
+		<result property="num" column="num" />
+	</resultMap>
+
+	<select id="selectqnaList" resultMap="serviceResult">
+	<![CDATA[
+	select c.* from (
+		select @ROWNUM := @ROWNUM + 1 as num,t.*
+		from
+		(select (@ROWNUM := 0)) a,(
+		select * from qna
+		order by qnaNum desc
+		) t
+		) c
+		where
+		num between (#{section}-1)*100+
+		(#{pageNum}-1)*10+1 and
+		(#{section}-1)*100+(#{pageNum})*10
+	]]>
+	</select>
+	
+	<select id="searchQna" resultMap="serviceResult" parameterType="java.util.HashMap">
+	select c.* from (
+		select @ROWNUM := @ROWNUM + 1 as num,t.*
+		from
+		(select (@ROWNUM := 0)) a,(
+		select * from qna
+		<if test="search_keyword != ''">
+		where 
+		<if test="search_type == '전체'">
+		qnaType like concat('%',#{search_keyword},'%') or
+		qnaTitle like concat('%',#{search_keyword},'%') or
+		memberId like concat('%',#{search_keyword},'%')
+		</if>
+		<if test="search_type == '분류'">
+		qnaType like concat('%',#{search_keyword},'%')
+		</if>
+		<if test="search_type == '제목'">
+		qnaTitle like concat('%',#{search_keyword},'%')
+		</if>
+		<if test="search_type == '작성자'">
+		memberId like concat('%',#{search_keyword},'%')
+		</if>
+		</if>
+		order by qnaNum desc
+		) t
+		) c
+		where
+		num between (#{section}-1)*100+
+		(#{pageNum}-1)*10+1 and
+		(#{section}-1)*100+(#{pageNum})*10
+	</select>
+
+	<delete id="deleteQna" parameterType="serviceVO">
+	 <![CDATA[
+	delete from qna where qnaNum = #{qnaNum}
+	]]>
+	</delete>
+	
+	<select id="selectproductNum" resultType="serviceVO"
+		parameterType="serviceVO">
+	<![CDATA[
+	select productNum from product where productName = #{productName}
+	]]>
+	</select>
+	
+		<select id="selectMemberId" resultType="String"
+		parameterType="String">
+	<![CDATA[
+	select memberId from member where memberId = #{memberId}
+	]]>
+	</select>
+
+	<insert id="insertNewQna" parameterType="serviceVO">
+	<![CDATA[
+			INSERT INTO qna 
+							(memberNum,
+							 productNum,
+							 productName,
+							 memberId, 
+							 qnaType, 
+							 qnaTitle, 
+							 qnaText,
+							 qnaAns,
+							 qnaSecret) 
+							   VALUES (
+							   #{memberNum},
+							   #{productNum},
+							   #{productName},
+							   #{memberId},
+							   #{qnaType},
+							   #{qnaTitle},
+							   #{qnaText},
+							   #{qnaAns},
+							   #{qnaSecret})
+				
+	]]>
+	</insert>
+	
+	<update id="qnaAns" parameterType="serviceVO">
+	<![CDATA[
+		update qna set qnaAns = #{qnaAns} where qnaNum = #{qnaNum}
+
+	]]>
+	</update>
+	
+		<select id="selectKeywordSearch" resultType="String"
+		parameterType="String">
+	    <![CDATA[
+        select productName from product 
+        where         
+        productName like Concat('%', Ifnull(#{productName}, '') , '%')
+		]]>
+	</select>
+	
+		<select id="selectQna" resultType="serviceVO" parameterType="serviceVO">
+	<![CDATA[
+	select * from qna where qnaNum = #{qnaNum}
+	]]>
+	</select>
+	
+	<update id="updateQna" parameterType="serviceVO">
+	<![CDATA[
+		update qna set qnaType = #{qnaType}, 
+						qnaTitle = #{qnaTitle},
+						qnaType = #{qnaType},
+						productNum = #{productNum},
+						productName = #{productName},
+						qnaText = #{qnaText},
+						qnaAns = null,
+						qnaSecret = #{qnaSecret}
+		
+						where qnaNum = #{qnaNum}
+
+	]]>
+	</update>
+
+</mapper>

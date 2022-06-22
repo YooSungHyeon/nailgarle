@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.cart">
+	<!-- 리절트 맵 정의 -->
+	<resultMap id="cartResult" type="CartVO">
+		<result property="cartNum" column="cartNum" />
+		<result property="memberNum" column="memberNum" />
+		<result property="productNum" column="productNum" />
+		<result property="loginCK" column="loginCK" />
+		<result property="productOption" column="productOption" />
+		<result property="cartQuantity" column="cartQuantity" />
+		<result property="cartNote" column="cartNote" />
+		<result property="cartRegDate" column="cartRegDate" />
+	</resultMap>
+
+	<resultMap id="goodsResult" type="goodsVO">
+		<result property="productNum" column="productNum" />
+		<result property="p_mainNum" column="p_mainNum" />
+		<result property="sellerNum" column="sellerNum" />
+		<result property="p_subNum" column="p_subNum" />
+		<result property="mainCategoryName" column="mainCategoryName" />
+
+		<result property="subCategoryName" column="subCategoryName" />
+		<result property="typeName" column="typeName" />
+		<result property="productName" column="productName" />
+		<result property="sellerName" column="sellerName" />
+		<result property="originPrice" column="originPrice" />
+		<result property="productPrice" column="productPrice" />
+		<result property="productPoint" column="productPoint" />
+
+		<result property="productDelivery" column="productDelivery" />
+		<result property="productDc" column="productDc" />
+		<result property="productSale" column="productSale" />
+		<result property="productsStock" column="productsStock" />
+		<result property="productStar" column="productStar" />
+		<result property="productDisplay" column="productDisplay" />
+		<result property="productStatus" column="productStatus" />
+		<result property="productDetail" column="productDetail" />
+		<result property="rentalAvailability" column="rentalAvailability" />
+		<result property="productRegDate" column="productRegDate" />
+		<result property="rentalPrice" column="rentalPrice" />
+		<result property="rentalStock" column="rentalStock" />
+		<result property="fileName" column="fileName" />
+	</resultMap>
+
+	<select id="selectCartList" parameterType="cartVO"
+		resultMap="cartResult">
+		<choose>
+			<when test="loginCK=='login'">
+		        <![CDATA[	
+		        select * from cart 
+		        ]]>				
+			</when>
+			<otherwise>
+		        <![CDATA[
+		        select * from non_cart 
+		        ]]>				
+			</otherwise>
+		</choose>	
+			<![CDATA[			
+				where memberNum=#{memberNum} 
+				order by cartNum desc
+			]]>
+	</select>
+
+	<select id="selectGoodsList" resultMap="goodsResult"
+		parameterType="cartVO">		
+			          select g.*,d.fileName 
+      	<choose>
+			<when test="loginCK=='login'">
+		        <![CDATA[			        
+			          from product g, product_image d, cart c
+		        ]]>				
+			</when>
+			<otherwise>
+		        <![CDATA[			        
+			          from product g, product_image d, non_cart c
+		        ]]>				
+			</otherwise>
+		</choose>		
+		        <![CDATA[			        
+			          where g.productNum=d.productNum 
+			          and d.filetype='main'
+			          and g.productNum = c.productNum
+			          and c.memberNum = #{memberNum}
+					  order by c.cartNum desc
+		        ]]>				
+	</select>
+
+	<select id="selectCountInCart" resultType="String"
+		parameterType="cartVO">
+		    select case count(*)  when 0 then  'false'  else 'true' end 
+		<choose>
+			<when test="loginCK=='login'">
+		        <![CDATA[	
+		 		   from cart
+		        ]]>				
+			</when>
+			<otherwise>
+		        <![CDATA[	
+		 		   from non_cart
+		        ]]>				
+			</otherwise>
+		</choose>		
+			where memberNum=#{memberNum}
+			and productNum=#{productNum} 
+	</select>
+
+	<insert id="insertGoodsInCart" parameterType="cartVO">
+    	<choose>
+			<when test="loginCK=='login'">
+		        <![CDATA[
+		        insert into cart(memberNum, productNum, productOption, cartQuantity, cartNote) values(#{memberNum}, #{productNum}, #{productOption}, #{cartQuantity}, #{cartNote})
+		        ]]>				
+			</when>
+			<otherwise>
+		        <![CDATA[	
+		        insert into non_cart(memberNum, productNum, productOption, cartQuantity, cartNote) values(#{memberNum}, #{productNum}, #{productOption}, #{cartQuantity}, #{cartNote})
+		        ]]>				
+			</otherwise>
+		</choose>	
+    	
+	</insert>
+
+	<update id="updateCartGoodsQty" parameterType="cartVO">
+    	<choose>
+			<when test="loginCK=='login'">
+		        <![CDATA[		        
+					update cart	
+		        ]]>				
+			</when>
+			<otherwise>
+		        <![CDATA[
+					update non_cart	
+		        ]]>				
+			</otherwise>
+		</choose>	
+		<![CDATA[
+			set cartQuantity=#{cartQuantity}
+		 	where memberNum=#{memberNum}
+			and productNum=#{productNum}
+    	]]>
+	</update>
+	<delete id="deleteCartGoods" parameterType="cartVO">
+    	 <choose>
+			<when test="loginCK=='login'">
+		        <![CDATA[		        
+					delete from cart
+		        ]]>				
+			</when>
+			<otherwise>
+		        <![CDATA[
+					delete from non_cart	
+		        ]]>				
+			</otherwise>
+		</choose>		
+	      where cartNum=#{cartNum}
+	</delete>
+
+	<delete id="deleteAllCartGoods" parameterType="cartVO">
+    	 <choose>
+			<when test="loginCK=='login'">
+		        <![CDATA[		        
+					delete from cart
+		        ]]>				
+			</when>
+			<otherwise>
+		        <![CDATA[
+					delete from non_cart	
+		        ]]>				
+			</otherwise>
+		</choose>		
+	      where memberNum=#{memberNum}
+	</delete>
+	
+	<select id="selectNonMemberNum" resultType="int">
+	    <![CDATA[
+		select max(memberNum)+1 from non_cart 
+		]]>
+	</select>
+
+</mapper>

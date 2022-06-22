@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+	<definition name="/mypage/mypageMain" extends="baseLayout">
+		<put-attribute name="title" value="마이페이지 메인" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/mypage/mypageMain.jsp" />
+	</definition>
+
+	<definition name="/mypage/mypagePwCheck"
+		extends="baseLayout">
+		<put-attribute name="title" value="비밀번호 확인" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/mypage/mypagePwCheck.jsp" />
+	</definition>
+
+	<definition name="/mypage/mypageUpdate" extends="baseLayout">
+		<put-attribute name="title" value="내 정보 수정" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/mypage/mypageUpdate.jsp" />
+	</definition>
+
+	<definition name="/mypage/mypageOrderCansle"
+		extends="baseLayout">
+		<put-attribute name="title" value="마이페이지 주문취소" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/mypage/mypageOrderCansle.jsp" />
+	</definition>
+	<definition name="/mypage/mypageOrderList"
+		extends="baseLayout">
+		<put-attribute name="title" value="마이페이지 주문/배송조회" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/mypage/mypageOrderList.jsp" />
+	</definition>
+	<definition name="/mypage/mypageOrderReplace"
+		extends="baseLayout">
+		<put-attribute name="title" value="마이페이지 주문/배송" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/mypage/mypageOrderReplace.jsp" />
+	</definition>
+	<definition name="/mypage/mypagePoint" extends="baseLayout">
+		<put-attribute name="title" value="마이페이지 포인트 페이지" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/mypage/mypagePoint.jsp" />
+	</definition>
+	<definition name="/mypage/proReturnExchange"
+		extends="baseLayout">
+		<put-attribute name="title" value="마이페이지 주문/배송" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/mypage/mypageExchange.jsp" />
+	</definition>
+	<definition name="/mypage/productReturn"
+		extends="baseLayout">
+		<put-attribute name="title" value="마이페이지 주문/배송" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/mypage/mypageOrderReplace.jsp" />
+	</definition>
+	<definition name="/mypage/productExchange"
+		extends="baseLayout">
+		<put-attribute name="title" value="마이페이지 주문/배송" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/mypage/mypageOrderReplace.jsp" />
+	</definition>
+
+</tiles-definitions>
+
+

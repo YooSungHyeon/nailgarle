@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+	<definition name="/service/service" extends="baseLayout">
+		<put-attribute name="title" value="고객센터" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/service/service.jsp" />
+	</definition>
+	<definition name="/service/serviceqna" extends="baseLayout">
+		<put-attribute name="title" value="1:1 문의" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/service/serviceqna.jsp" />
+	</definition>
+	<definition name="/service/serviceqna2" extends="baseLayout">
+		<put-attribute name="title" value="1:1 문의" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/service/serviceqna2.jsp" />
+	</definition>
+	<definition name="/service/selectQna" extends="baseLayout">
+		<put-attribute name="title" value="1:1 문의" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/service/serviceqna3.jsp" />
+	</definition>
+		<definition name="/service/keywordSearch" extends="baseLayout">
+		<put-attribute name="title" value="고객센터" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/service/serviceqna.jsp" />
+	</definition>
+	<definition name="/service/updateQna" extends="baseLayout">
+		<put-attribute name="title" value="1:1 문의" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/service/serviceqna.jsp" />
+	</definition>
+	<definition name="/service/searchQna" extends="baseLayout">
+		<put-attribute name="title" value="1:1 문의" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/service/serviceqna.jsp" />
+	</definition>
+</tiles-definitions>
+
+

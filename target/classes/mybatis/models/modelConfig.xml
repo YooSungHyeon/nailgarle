@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration 	PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<typeAliases>
+		<typeAlias type="com.nailgarle01.nailgarle.goods.vo.GoodsVO"
+			alias="goodsVO" />
+		<typeAlias
+			type="com.nailgarle01.nailgarle.goods.vo.ImageFileVO"
+			alias="imageFileVO" />
+		<typeAlias
+			type="com.nailgarle01.nailgarle.goods.vo.CategoryVO"
+			alias="categoryVO" />
+		<typeAlias
+			type="com.nailgarle01.nailgarle.member.vo.MemberVO" alias="memberVO" />
+		<typeAlias type="com.nailgarle01.nailgarle.order.vo.OrderVO"
+			alias="orderVO" />
+		<typeAlias type="com.nailgarle01.nailgarle.order.vo.PointVO"
+			alias="pointVO" />			
+		<typeAlias type="com.nailgarle01.nailgarle.cart.vo.CartVO"
+			alias="cartVO" />
+		<typeAlias
+			type="com.nailgarle01.nailgarle.seller.seller.vo.SellerVO" alias="sellerVO" />
+		<typeAlias
+			type="com.nailgarle01.nailgarle.admin.sales.vo.AdminSalesVO"
+			alias="adminSalesVO" />
+		<typeAlias
+			type="com.nailgarle01.nailgarle.service.vo.ServiceVO"
+			alias="serviceVO" />
+		<typeAlias
+			type="com.nailgarle01.nailgarle.board.vo.ReviewBoardVO"
+			alias="reviewboardVO" />
+		<typeAlias
+			type="com.nailgarle01.nailgarle.board.vo.ReviewImageVO"
+			alias="reviewimageVO" />
+		<typeAlias
+			type="com.nailgarle01.nailgarle.board.vo.CommentVO" alias="commentVO" />
+		<typeAlias
+			type="com.nailgarle01.nailgarle.board.vo.PlanBoardVO"
+			alias="planboardVO" />
+	</typeAliases>
+
+</configuration>
+
+
+

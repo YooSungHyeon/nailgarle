@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+	<definition name="/member/login" extends="baseLayout">
+		<put-attribute name="title" value="로그인 페이지" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/member/login.jsp" />
+	</definition>
+	<definition name="/member/memberAgree" extends="baseLayout">
+		<put-attribute name="title" value="이용약관 페이지" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/member/memberAgree.jsp" />
+	</definition>
+
+	<definition name="/member/sellerAgree" extends="baseLayout">
+		<put-attribute name="title" value="이용약관 페이지" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/member/sellerAgree.jsp" />
+	</definition>
+
+	<definition name="/member/find" extends="baseLayout">
+		<put-attribute name="title" value="회원 정보 찾기" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/member/find.jsp" />
+	</definition>
+	<definition name="/member/findId" extends="baseLayout">
+		<put-attribute name="title" value="아이디찾기 페이지" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/member/findId.jsp" />
+	</definition>
+	<definition name="/member/findIdEnd" extends="baseLayout">
+		<put-attribute name="title" value="아이디찾기 페이지" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/member/findIdEnd.jsp" />
+	</definition>
+	<definition name="/member/findPw" extends="baseLayout">
+		<put-attribute name="title" value="비밀번호찾기 페이지" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/member/findPw.jsp" />
+	</definition>
+	<definition name="/member/memberForm" extends="baseLayout">
+		<put-attribute name="title" value="일반회원 회원가입 페이지" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/member/memberForm.jsp" />
+	</definition>
+	<definition name="/member/memberSelect" extends="baseLayout">
+		<put-attribute name="title" value="회원가입 페이지" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/member/memberSelect.jsp" />
+	</definition>
+
+	<definition name="/member/newPw" extends="baseLayout">
+		<put-attribute name="title" value="비밀번호 찾기" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/member/newPw.jsp" />
+	</definition>
+	<definition name="/member/sellerForm" extends="baseLayout">
+		<put-attribute name="title" value="사업자 회원가입 페이지" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/member/sellerForm.jsp" />
+	</definition>
+
+</tiles-definitions> 
+
+

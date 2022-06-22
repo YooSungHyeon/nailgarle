@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+
+	<definition name="/board/planboard" extends="baseLayout">
+		<put-attribute name="title" value="일정 게시판" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/board/planboard.jsp" />
+	</definition>
+
+	<definition name="/board/selectPlan" extends="baseLayout">
+		<put-attribute name="title" value="일정 게시판" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/board/planArticle.jsp" />
+	</definition>
+
+	<definition name="/board/newPlan" extends="baseLayout">
+		<put-attribute name="title" value="일정 게시판" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/board/planboard.jsp" />
+	</definition>
+
+	<definition name="/board/modifyPlan" extends="baseLayout">
+		<put-attribute name="title" value="일정 게시판" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/board/modifyPlan.jsp" />
+	</definition>
+
+	<definition name="/board/boardDiary" extends="baseLayout">
+		<put-attribute name="title" value="일정 게시판" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/board/boardDiary.jsp" />
+	</definition>
+
+	<definition name="/board/reviewarticle" extends="baseLayout">
+		<put-attribute name="title" value="리뷰 게시판" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/board/reviewarticle.jsp" />
+	</definition>
+
+	<definition name="/board/reviewboard" extends="baseLayout">
+		<put-attribute name="title" value="리뷰 게시판" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/board/reviewboard.jsp" />
+	</definition>
+
+	<definition name="/board/writereview" extends="baseLayout">
+		<put-attribute name="title" value="리뷰 게시판" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/board/writereview.jsp" />
+	</definition>
+
+
+	<definition name="/board/reviewArticle" extends="baseLayout">
+		<put-attribute name="title" value="리뷰 게시판" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/board/reviewarticle.jsp" />
+	</definition>
+
+	<definition name="/board/modifyArticle" extends="baseLayout">
+		<put-attribute name="title" value="리뷰 게시판" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/board/modifyreview.jsp" />
+	</definition>
+
+	<definition name="/board/addComment" extends="baseLayout">
+		<put-attribute name="title" value="게시판" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/board/reviewarticle.jsp" />
+	</definition>
+	
+	<definition name="/board/search_plan" extends="baseLayout">
+		<put-attribute name="title" value="일정 게시판 페이지" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/board/planboard.jsp" />
+	</definition>
+	<definition name="/board/search_review" extends="baseLayout">
+		<put-attribute name="title" value="일정 게시판 페이지" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/board/reviewboard.jsp" />
+	</definition>
+
+</tiles-definitions>
+
+

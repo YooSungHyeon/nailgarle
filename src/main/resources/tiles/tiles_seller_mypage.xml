@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+	<definition name="/seller/sellerInfoUpdate"
+		extends="baseLayout">
+		<put-attribute name="title" value="사업자 정보 수정" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/seller/mypage/sellerInfoUpdate.jsp" />
+	</definition>
+	
+	<definition name="/seller/sellerPwCheck"
+		extends="baseLayout">
+		<put-attribute name="title" value="사업자 비밀번호 확인" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/seller/mypage/sellerPwCheck.jsp" />
+	</definition>
+	
+	<definition name="/seller/PwCheck"
+		extends="baseLayout">
+		<put-attribute name="title" value="사업자 비밀번호 확인" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/seller/mypage/sellerPwCheck.jsp" />
+	</definition>	
+</tiles-definitions>

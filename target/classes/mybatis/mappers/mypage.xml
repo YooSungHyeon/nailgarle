@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.mypage">
+	<!-- 리절트 맵 정의 -->
+	<resultMap id="orderProductResult" type="orderVO">
+		<result property="orderNum" column="orderNum" />
+		<result property="memberNum" column="memberNum" />
+		<result property="productNum" column="productNum" />
+		<result property="ordererName" column="ordererName" />
+		<result property="productName" column="productName" />
+		<result property="productQuantity" column="productQuantity" />
+		<result property="productOption" column="productOption" />
+		<result property="productPrice" column="productPrice" />
+
+		<result property="productSale" column="productSale" />
+		<result property="productDelivery" column="productDelivery" />
+		<result property="orderAmount" column="orderAmount" />
+		<result property="deliveryMethod" column="deliveryMethod" />
+
+		<result property="receiverName" column="receiverName" />
+		<result property="receiverHp1" column="receiverHp1" />
+		<result property="receiverHp2" column="receiverHp2" />
+		<result property="receiverHp3" column="receiverHp3" />
+		<result property="receiverTel1" column="receiverTel1" />
+
+		<result property="receiverTel2" column="receiverTel2" />
+		<result property="receiverTel3" column="receiverTel3" />
+		<result property="receiverZipcode" column="receiverZipcode" />
+		<result property="receiverAddr1" column="receiverAddr1" />
+		<result property="receiverAddr2" column="receiverAddr2" />
+		<result property="deliveryState" column="deliveryState" />
+		<result property="deliverymessage" column="deliverymessage" />
+		<result property="orderDate" column="orderDate" />
+		<result property="payMethod" column="payMethod" />
+		<result property="cardName" column="cardName" />
+		<result property="cardPayMonth" column="cardPayMonth" />
+		<result property="rentalStart" column="rentalStart" />
+		<result property="rentalEnd" column="rentalEnd" />
+	</resultMap>
+	<resultMap id="PointResult" type="PointVO">
+		<result property="pointNum" column="pointNum" />
+		<result property="memberNum" column="memberNum" />
+		<result property="pointUseDate" column="pointUseDate" />
+		<result property="pointContents" column="pointContents" />
+		<result property="pointSave" column="pointSave" />
+		<result property="pointUse" column="pointUse" />
+		<result property="recNum" column="recNum" />
+	</resultMap>
+
+	<select id="selectMyOrderProductList"
+		resultMap="orderProductResult" parameterType="java.util.HashMap">
+		select * from (
+		select @ROWNUM := @ROWNUM + 1 as recNum, b.* from (select (@ROWNUM := 0)) a,
+		(select * from nailgarle.order where memberNum=#{memberNum}
+		<if test="searchType != null">
+			<if test="searchType == 'productName'.toString()">
+				and productName like CONCAT('%', IFNULL(#{keyword}, ''), '%')
+			</if>
+			<if test="searchType == 'ordererName'.toString()">
+				and ordererName like CONCAT('%', IFNULL(#{keyword}, ''), '%')
+			</if>
+			<if test="searchType == 'receiverName'.toString()">
+				and receiverName like CONCAT('%', IFNULL(#{keyword}, ''), '%')
+			</if>
+			<if test="searchType == 'all'.toString()">
+				and (productName like CONCAT('%',IFNULL(#{keyword}, ''), '%')
+				or ordererName like CONCAT('%', IFNULL(#{keyword}, ''), '%')
+				or receiverName like CONCAT('%', IFNULL(#{keyword}, ''), '%'))
+			</if>
+		</if>
+		order by orderDate desc
+		)b
+		)c
+		where recNum between (#{section}-1)*100+(#{pageNum}-1)*10+1 and
+		(#{section}-1)*100+(#{pageNum})*10
+	</select>
+
+	<update id="updateMyInfo" parameterType="memberVO">
+		update member
+		<set>
+			memberPw=#{memberPw},
+			memberHp1=#{memberHp1},
+			memberHp2=#{memberHp2},
+			memberHp3=#{memberHp3},
+			memberEmail1=#{memberEmail1},
+			memberEmail2=#{memberEmail2},
+			memberZipcode=#{memberZipcode},
+			memberAddr1=#{memberAddr1},
+			memberAddr2=#{memberAddr2}
+		</set>
+		where memberId=#{memberId}
+	</update>
+
+	<select id="selectMyInfo" resultType="memberVO"
+		parameterType="String">
+	    <![CDATA[
+			select * from member 
+			where memberId=#{memberId}
+    	]]>
+	</select>
+
+	<update id="memberDelete" parameterType="String">
+		update member
+		<set>
+			del_yn = "y",
+			del_date = now()
+		</set>
+		where memberId=#{memberId}
+	</update>
+	
+	<select id="selectMypagePointList"
+		resultMap="PointResult" parameterType="java.util.HashMap">
+		select * from (
+		select @ROWNUM := @ROWNUM + 1 as recNum, b.* from (select (@ROWNUM := 0)) a,
+		(select * from nailgarle.point where memberNum=#{memberNum} 
+		<if test="beginDate != null and beginDate != ''">
+		and date_format(pointUseDate, '%Y-%m-%d') between #{beginDate} and #{endDate}
+		</if>
+		<if test="beginDate == '' and endDate != ''">
+		and date_format(pointUseDate, '%Y-%m-%d') &lt;= #{endDate}
+		</if>
+		
+		<if test="searchType != null">
+			<if test="searchType == 'pointContents'.toString()">
+				and pointContents like CONCAT('%', IFNULL(#{keyword}, ''), '%')
+			</if>
+			<if test="searchType == 'all'.toString()">
+				and pointContents like CONCAT('%',IFNULL(#{keyword}, ''), '%')
+			</if>
+		</if>
+		order by pointUseDate desc
+		)b
+		)c
+		where recNum between (#{section}-1)*100+(#{pageNum}-1)*10+1 and
+		(#{section}-1)*100+(#{pageNum})*10
+	</select>
+	
+	<select id="selectMypageOrderList"
+		resultMap="orderProductResult" parameterType="java.util.HashMap">
+		select * from (
+		select @ROWNUM := @ROWNUM + 1 as recNum, b.* from (select (@ROWNUM := 0)) a,
+		(select * from nailgarle.order where memberNum=#{memberNum} 
+		<if test="beginDate != null and beginDate != ''">
+		and date_format(orderDate, '%Y-%m-%d') between #{beginDate} and #{endDate}
+		</if>
+		<if test="beginDate == '' and endDate != ''">
+		and date_format(orderDate, '%Y-%m-%d') &lt;= #{endDate}
+		</if>
+		
+		<if test="searchType != null">
+			<if test="searchType == 'productName'.toString()">
+				and productName like CONCAT('%', IFNULL(#{keyword}, ''), '%')
+			</if>
+			<if test="searchType == 'ordererName'.toString()">
+				and ordererName like CONCAT('%', IFNULL(#{keyword}, ''), '%')
+			</if>
+			<if test="searchType == 'receiverName'.toString()">
+				and receiverName like CONCAT('%', IFNULL(#{keyword}, ''), '%')
+			</if>
+			<if test="searchType == 'all'.toString()">
+				and (productName like CONCAT('%',IFNULL(#{keyword}, ''), '%')
+				or ordererName like CONCAT('%', IFNULL(#{keyword}, ''), '%')
+				or receiverName like CONCAT('%', IFNULL(#{keyword}, ''), '%'))
+			</if>
+		</if>
+		order by orderDate desc
+		)b
+		)c
+		where recNum between (#{section}-1)*100+(#{pageNum}-1)*10+1 and
+		(#{section}-1)*100+(#{pageNum})*10
+	</select>
+	
+	<update id="updateMyOrderCancel" parameterType="String">
+		update
+		nailgarle.order
+		set deliveryState='주문취소'
+		where
+		orderNum=#{orderNum}
+	</update>
+	
+	<select id="selectProduct" resultType="orderVO" parameterType="orderVO">
+	<![CDATA[
+	select * from `order` where orderNum = #{orderNum}
+	]]>
+	</select>
+	
+	<select id="selectOption" resultType="goodsVO" parameterType="goodsVO">
+	select p_mainNum,productOption, productOption2, productsStock from `product` 
+	where productNum = #{productNum}
+	</select>
+	
+	<update id="productReturn" parameterType="orderVO">
+	update `order` set deliveryState = #{deliveryState}, 
+					   return_Option = #{return_Option}, 
+					   message = #{message}
+					   where orderNum = #{orderNum}
+	
+	</update>
+	
+	<update id="productExchange" parameterType="orderVO">
+	update `order` set productOption = #{productOption}, 
+					   deliveryState = #{deliveryState},
+					   exchange_Option = #{exchange_Option}, 
+					   message = #{message}
+					   where orderNum = #{orderNum}
+	
+	</update>
+
+</mapper>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.admin.sales">
+	<!-- 리절트 맵 정의 -->
+	<resultMap id="orderGoodsResult" type="OrderVO">
+		<result property="orderNum" column="orderNum" />
+		<result property="memberNum" column="memberNum" />
+		<result property="productNum" column="productNum" />
+		<result property="cartNum" column="cartNum" />
+		<result property="ordererName" column="ordererName" />
+		<result property="productName" column="productName" />
+		<result property="productQuantity" column="productQuantity" />
+		<result property="productOption" column="productOption" />
+		<result property="productPrice" column="productPrice" />
+
+		<result property="productSale" column="productSale" />
+		<result property="productDelivery" column="productDelivery" />
+		<result property="orderAmount" column="orderAmount" />
+		<result property="deliveryMethod" column="deliveryMethod" />
+
+		<result property="receiverName" column="receiverName" />
+		<result property="receiverHp1" column="receiverHp1" />
+		<result property="receiverHp2" column="receiverHp2" />
+		<result property="receiverHp3" column="receiverHp3" />
+		<result property="receiverTel1" column="receiverTel1" />
+
+		<result property="receiverTel2" column="receiverTel2" />
+		<result property="receiverTel3" column="receiverTel3" />
+		<result property="receiverZipcode" column="receiverZipcode" />
+		<result property="receiverAddr1" column="receiverAddr1" />
+		<result property="receiverAddr2" column="receiverAddr2" />
+		<result property="deliveryState" column="deliveryState" />
+		<result property="deliverymessage" column="deliverymessage" />
+		<result property="orderDate" column="orderDate" />
+		<result property="payMethod" column="payMethod" />
+		<result property="cardName" column="cardName" />
+		<result property="cardPayMonth" column="cardPayMonth" />
+		<result property="rentalStart" column="rentalStart" />
+		<result property="rentalEnd" column="rentalEnd" />
+	</resultMap>
+
+	<resultMap id="adminSalesResult" type="AdminSalesVO">
+		<result property="startDate" column="startDate" />
+		<result property="endDate" column="endDate" />
+		<result property="orderAmount" column="orderAmount" />
+		<result property="rentalAmount" column="rentalAmount" />
+		<result property="orderPrice" column="orderPrice" />
+		<result property="rentalPrice" column="rentalPrice" />
+	</resultMap>
+
+
+	<select id="selectAdminSalesList" resultMap="adminSalesResult"
+		parameterType="adminSalesVO">
+	    <![CDATA[
+			SELECT * FROM (select sum(productSale) as orderPrice, sum(productQuantity) as orderAmount
+			from nailgarle.`order` where rentalStart is null 
+			and orderDate between #{startDate} and #{endDate}) c, 
+			(select sum(productSale) as rentalPrice, sum(productQuantity) as rentalAmount 
+			from nailgarle.`order` where rentalStart is not null 
+			and orderDate between #{startDate} and #{endDate}) d;
+		]]>
+	</select>
+
+	<select id="selectMin" resultType="String">
+	    <![CDATA[
+	    SELECT date_format(min(orderDate), '%Y-%m-%d')  FROM nailgarle.`order` ;
+		]]>
+	</select>
+
+</mapper>

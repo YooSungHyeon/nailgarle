@@ -1,0 +1,57 @@
+#footer {
+    clear: both;
+    overflow: hidden;
+    margin-top: 40px;
+    padding-bottom: 63px;
+    background: #fff;
+}
+.wrap_inner {
+    position: relative;
+    width: 1140px;
+    margin: 0 auto;
+}
+#footer .ft_logo {
+    position: absolute;
+    top: 36px;
+    left: 6px;
+    z-index: 10;
+}
+#footer .ft_logo img{
+	width: 240px;
+	height: 66px;	
+}
+#footer .info_wrap {
+    float: left;
+    padding-left: 287px;
+}
+#footer .shopinfo .menu {
+    padding: 35px 0 25px;
+    list-style:none;
+}
+#footer .shopinfo .menu li {
+    float: left;
+}
+#footer .shopinfo .menu li:first-child a {
+    padding-left: 0;
+    background: none;
+}
+#footer .shopinfo .menu li a {
+    display: block;
+    padding: 0 11px;
+    color: #979797;
+    text-decoration: none;
+}
+#footer .shopinfo .info {
+    clear: both;
+    padding: 0;
+    color: #979797;
+    font-size: 11px;
+    font-style: normal;
+}
+#footer .shopinfo .copyright {
+    clear: both;
+    padding: 20px 0 0 287px;
+    color: #979797;
+    font-size: 11px;
+    line-height: 140%;
+}

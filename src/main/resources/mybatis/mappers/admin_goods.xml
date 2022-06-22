@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.admin.goods">
+	<!-- 리절트 맵 정의 -->
+	<resultMap id="goodsResult" type="goodsVO">
+		<result property="productNum" column="productNum" />
+		<result property="p_mainNum" column="p_mainNum" />
+		<result property="sellerNum" column="sellerNum" />
+		<result property="p_subNum" column="p_subNum" />
+		<result property="mainCategoryName" column="mainCategoryName" />
+
+		<result property="subCategoryName" column="subCategoryName" />
+		<result property="typeName" column="typeName" />
+		<result property="productName" column="productName" />
+		<result property="sellerName" column="sellerName" />
+		<result property="originPrice" column="originPrice" />
+		<result property="productPrice" column="productPrice" />
+		<result property="productPoint" column="productPoint" />
+
+		<result property="productDelivery" column="productDelivery" />
+		<result property="productDc" column="productDc" />
+		<result property="productSale" column="productSale" />
+		<result property="productsStock" column="productsStock" />
+		<result property="productStar" column="productStar" />
+		<result property="productDisplay" column="productDisplay" />
+		<result property="productStatus" column="productStatus" />
+		<result property="productDetail" column="productDetail" />
+		<result property="productRegDate" column="productRegDate" />
+		<result property="productOption" column="productOption" />
+		<result property="productOption2" column="productOption2" />
+		<result property="fileName" column="fileName" />
+	</resultMap>
+
+	<resultMap id="imageResult" type="ImageFileVO">
+		<result property="p_imageNum" column="p_imageNum" />
+		<result property="productNum" column="productNum" />
+		<result property="fileName" column="fileName" />
+		<result property="regId" column="regId" />
+		<result property="fileType" column="fileType" />
+		<result property="p_imageRegDate" column="p_imageRegDate" />
+	</resultMap>
+
+	<resultMap id="adminSalesResult" type="AdminSalesVO">
+		<result property="startDate" column="startDate" />
+		<result property="endDate" column="endDate" />
+		<result property="orderAmount" column="orderAmount" />
+		<result property="rentalAmount" column="rentalAmount" />
+		<result property="orderPrice" column="orderPrice" />
+		<result property="rentalPrice" column="rentalPrice" />
+	</resultMap>
+
+
+	<select id="selectAdminGoodsList" resultMap="goodsResult"
+		parameterType="adminSalesVO">
+	    <![CDATA[
+	      select t.*
+          from(
+			select @ROWNUM := @ROWNUM + 1 as recNum, g.*
+			from (select (@ROWNUM := 0)) a, product g
+		    order by g.productNum desc)  t	
+		    where recNum between (#{secNum}-1)*100+ (#{pageNum}-1)*10+1 and (#{secNum}-1)*100+(#{pageNum})*10
+		]]>
+	</select>
+
+	<select id="selectCategoryList" resultType="String"
+		parameterType="String">
+	    <![CDATA[
+	    SELECT subCategoryName FROM p_subcategory where p_mainNum=#{categoryNum}
+		]]>
+	</select>
+
+	<select id="selectSubNum" resultType="Integer"
+		parameterType="java.util.Map">
+	    <![CDATA[
+	    SELECT p_subNum FROM p_subcategory where subCategoryName=#{subCategoryName}
+		]]>
+	</select>
+
+	<select id="selectProductNum" resultType="Integer">
+	    <![CDATA[
+	    SELECT max(productNum) from product 
+		]]>
+	</select>
+
+	<insert id="insertNewGoods" parameterType="java.util.Map">
+	    <![CDATA[
+				INSERT INTO product (p_mainNum,
+									sellerNum,
+									p_subNum,
+									mainCategoryName,
+									subCategoryName,
+									typeName,
+									productName,
+									productOption,
+									productOption2,
+									sellerName,
+									originPrice,
+									productPrice,
+									productDelivery,
+									productsStock,
+									productStar,
+									productDisplay,
+									productDetail)
+									VALUES (#{p_mainNum },
+											#{sellerNum },
+											#{p_subNum },
+											#{mainCategoryName },
+											#{subCategoryName },
+											#{typeName },
+											#{productName },
+											#{productOption },
+											#{productOption2 },
+											#{sellerName },
+											#{originPrice },
+											#{productPrice },
+											#{productDelivery },
+											#{productsStock },
+											#{productStar },
+											#{productDisplay },
+											#{productDetail });
+		
+		]]>
+	</insert>
+	<insert id="insertGoodsImageFile" parameterType="imageFileVO">
+	    <![CDATA[
+		   insert into product_image (productNum,
+											 fileName,
+											 fileType,
+											 regId)
+											 values(#{productNum},
+											 #{fileName},
+											 #{fileType},
+											 #{regId} )
+		]]>
+	</insert>
+
+	<select id="selectGoodsDetail" resultMap="goodsResult"
+		parameterType="String">
+	    <![CDATA[
+		    select g.*, d.fileName from product g, product_image d
+	        where g.productNum=d.productNum
+	        and d.fileType='main'
+	        and g.productNum=#{productNum}
+    	]]>
+	</select>
+	<select id="selectGoodsImageFileList" resultMap="imageResult"
+		parameterType="String">
+	    <![CDATA[
+		    	select * from  product_image 
+		    	where  
+			    productNum=#{productNum}
+			    order by p_imageNum asc
+    	]]>
+	</select>
+	
+	<update id="updateGoods" parameterType="java.util.Map">
+		UPDATE product
+		SET
+		p_mainNum = #{p_mainNum },
+		p_subNum = #{p_subNum },
+		mainCategoryName = #{mainCategoryName },
+		subCategoryName = #{subCategoryName },
+		typeName = #{typeName },
+		productName = #{productName },
+		productOption = #{productOption },
+		productOption2 = #{productOption2 },
+		originPrice = #{originPrice },
+		productPrice = #{productPrice },
+		productDelivery = #{productDelivery },
+		productsStock = #{productsStock },
+		productDisplay = #{productDisplay },
+		productDetail = #{productDetail }
+		WHERE productNum = #{productNum}
+	</update>
+	
+	<update id="updateGoodsImage" parameterType="imageFileVO">
+		update
+		product_image
+		set fileName=#{fileName}
+		where
+		productNum = #{productNum}
+		and fileType=#{fileType}
+	</update>
+
+	<delete id="deleteGoodsImage" parameterType="String">
+		delete from
+		product_image
+		where productNum = #{productNum}
+	</delete>
+	
+	<delete id="deleteGoods" parameterType="String">
+		delete from
+		product
+		where productNum = #{productNum}
+	</delete>
+</mapper>

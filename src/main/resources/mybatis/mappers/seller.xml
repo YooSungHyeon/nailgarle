@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.seller">
+
+	<!-- 리절트 맵 정의 -->
+	<resultMap id="sellerResult" type="SellerVO">
+		<result property="sellerNum" column="sellerNum" />
+		<result property="sellerId" column="sellerId" />
+		<result property="sellerPw" column="sellerPw" />
+		<result property="sellerName" column="sellerName" />
+		<result property="sellerHp1" column="sellerHp1" />
+		<result property="sellerHp2" column="sellerHp2" />
+		<result property="sellerHp3" column="sellerHp3" />
+		<result property="businessNum" column="businessNum" />
+		<result property="sellerEmail1" column="sellerEmail1" />
+		<result property="sellerEmail2" column="sellerEmail2" />
+		<result property="sellerZipcode" column="sellerZipcode" />
+		<result property="sellerAddr1" column="sellerAddr1" />
+		<result property="sellerAddr2" column="sellerAddr2" />
+		<result property="joinDate" column="joinDate" />
+		<result property="del_yn" column="del_yn" />
+		<result property="del_date" column="del_date" />
+	</resultMap>
+
+	<select id="login" resultType="sellerVO"
+		parameterType="java.util.Map">
+	<![CDATA[
+		select * from seller 
+		where sellerId=#{sellerId}			 
+	]]>
+	</select>
+
+	<select id="selectOverlappedID" parameterType="String"
+		resultType="String">
+		select case count(*) when 1 then 'true' when 0 then 'false'
+		end
+		from seller
+		where sellerId = #{id}
+	</select>
+
+	<insert id="insertNewSeller" parameterType="sellerVO">
+	<![CDATA[
+		insert into seller(sellerId, 
+							sellerPw, 
+							sellerName,
+							sellerHp1,
+							sellerHp2,
+							sellerHp3,
+							businessNum,
+							sellerEmail1,
+							sellerEmail2,
+							sellerZipcode,
+							sellerAddr1,
+							sellerAddr2) 
+					values(#{sellerId},
+							#{sellerPw},
+							#{sellerName},
+							#{sellerHp1},
+							#{sellerHp2},
+							#{sellerHp3},
+							#{businessNum},
+							#{sellerEmail1},
+							#{sellerEmail2},
+							#{sellerZipcode},
+                            #{sellerAddr1},
+                            #{sellerAddr2})
+	]]>
+	</insert>
+	
+	<update id="updateSellerInfo" parameterType="sellerVO">
+		update seller
+		<set>
+			sellerPw=#{sellerPw},
+			sellerName=#{sellerName},
+			sellerHp1=#{sellerHp1},
+			sellerHp2=#{sellerHp2},
+			sellerHp3=#{sellerHp3},
+			sellerEmail1=#{sellerEmail1},
+			sellerEmail2=#{sellerEmail2},
+			sellerZipcode=#{sellerZipcode},
+			sellerAddr1=#{sellerAddr1},
+			sellerAddr2=#{sellerAddr2}
+		</set>
+		where sellerId=#{sellerId}
+	</update>
+
+	<select id="selectSellerInfo" resultType="sellerVO"
+		parameterType="String">
+	    <![CDATA[
+			select * from seller 
+			where sellerId=#{sellerId}
+    	]]>
+	</select>
+	
+	<update id="sellerDelete" parameterType="String">
+		update seller
+		<set>
+			del_yn = "y",
+			del_date = now()
+		</set>
+		where sellerId=#{sellerId}
+	</update>
+
+</mapper>
