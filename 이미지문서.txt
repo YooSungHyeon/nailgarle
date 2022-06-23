@@ -1,0 +1,5 @@
+상품용폴더 경로
+C:\nailgarle\file_repo\상품번호
+ex)C:\nailgarle\file_repo\1
+리뷰용폴더 경로
+C:\nailgarle\file_repo\review_image\상품번호
